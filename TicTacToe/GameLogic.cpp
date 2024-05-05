@@ -1,8 +1,8 @@
 #include "pch.h"
+
 #include "GameLogic.h"
 
 #include <iostream>
-
 
 namespace
 {
@@ -159,6 +159,8 @@ namespace TicTacToe
     : m_game_iteration(0)
     , m_curr_player_idx(0)
     , m_players({})
+    , mp_winner(nullptr)
+    , m_game_status(GameStatus::IN_PROGRESS)
   {
     for (auto i = 0; i < i_size; ++i)
       m_board.emplace_back(i_size, ' ');
@@ -194,7 +196,7 @@ namespace TicTacToe
       std::all_of(m_players.cbegin(), m_players.cend(),
         [](std::shared_ptr<Player> ip_player) { return ip_player->DidLoose() == true; }))
     {
-      std::cout << "Draw!" << std::endl;
+      m_game_status = GameStatus::DRAW;
       return true;
     }
 
@@ -202,8 +204,8 @@ namespace TicTacToe
       (_HasWonOnColumnOrRow(curr_player->GetChanceColumns(), curr_player->GetChanceRows()) ||
         _HasWonOnDiagonals()))
     {
-      system("CLS");
-      std::cout << curr_player->GetName() << " Won!" << std::endl;
+      m_game_status = GameStatus::WON;
+      mp_winner = curr_player;
       return true;
     }
 
@@ -211,7 +213,21 @@ namespace TicTacToe
     return false;
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  std::string TicTacToe::GetWinnerName()
+  {
+    return mp_winner->GetName();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  GameStatus TicTacToe::GetGameStatus() const
+  {
+    return m_game_status;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   void TicTacToe::_SetNextPlayersTurn()
   {
@@ -221,7 +237,14 @@ namespace TicTacToe
       ++m_curr_player_idx;
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  char TicTacToe::GetCurrentPlayerMarker() const
+  {
+    return m_players[m_curr_player_idx]->GetMarker();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   void TicTacToe::_UpdateOpponentChances(const size_t& i_input_pos)
   {
@@ -331,4 +354,3 @@ namespace TicTacToe
     return i_marker_position % m_board.size();
   };
 }
-

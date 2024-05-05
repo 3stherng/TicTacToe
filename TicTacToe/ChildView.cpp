@@ -51,10 +51,26 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint i_point)
 {
   CClientDC dc(this);
 
-  auto cell_position = m_board.UpdateBoard(&dc, i_point, 'X');
+  auto cell_position = m_board.UpdateBoard(&dc, i_point, m_game.GetCurrentPlayerMarker());
   m_game.ContinueGame(cell_position);
   if (m_game.HasGameEnded())
-    return;
+    AnnonceGameResult();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void CChildView::AnnonceGameResult()
+{
+  CString annoucement;
+  if (m_game.GetGameStatus() == TicTacToe::GameStatus::DRAW)
+  {
+    annoucement = L"It's a DRAW game!";
+  }
+  else
+  {
+    annoucement = (m_game.GetWinnerName() + "has WON the game!").c_str();
+  }
+  MessageBox(annoucement, _T("Game Over"), MB_ICONEXCLAMATION | MB_OK);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,18 +8,33 @@
 
 namespace TicTacToe
 {
+  enum class GameStatus
+  {
+    IN_PROGRESS,
+    DRAW,
+    WON
+  };
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // class TicTacToe
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   class TicTacToe
   {
+  private:
+    class Player;
+
   public:
     explicit TicTacToe(const size_t& i_size);
 
     void AddPlayer(const char& i_marker, const std::string& i_name);
     void ContinueGame(const size_t& i_current_player_input_position);
     bool HasGameEnded();
+    std::string GetWinnerName();
+    GameStatus GetGameStatus() const;
+    char GetCurrentPlayerMarker() const;
 
   private:
-    class Player;
-
     void _SetNextPlayersTurn();
     void _UpdateOpponentChances(const size_t& i_marker_position);
 
@@ -28,11 +43,13 @@ namespace TicTacToe
 
     size_t _GetRow(const size_t& i_marker_position) const;
     size_t _GetColumn(const size_t& i_marker_position) const;
-  
+
   private:
     size_t m_game_iteration;
     size_t m_curr_player_idx;
     std::vector<std::shared_ptr<Player>> m_players;
     std::vector<std::vector<char>> m_board;
+    std::shared_ptr<Player> mp_winner;
+    GameStatus m_game_status;
   };
 }

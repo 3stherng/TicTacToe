@@ -17,6 +17,9 @@ protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 
 private:
+	void AnnonceGameResult();
+
+private:
 	UIBoard m_board;
 	TicTacToe::TicTacToe m_game;
 };
