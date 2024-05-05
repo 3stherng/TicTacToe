@@ -10,7 +10,7 @@ public:
 
   void SetClientRect(const CRect& i_client_rect);
   void DrawNewBoard(CDC* pDC);
-  void UpdateBoard(CDC* pDC, const CPoint& i_point, const char& i_char);
+  size_t UpdateBoard(CDC* pDC, const CPoint& i_point, const char& i_char);
   
 private:
   int _GetCellPosition(const CPoint& i_point);

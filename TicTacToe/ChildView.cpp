@@ -9,7 +9,10 @@
 
 CChildView::CChildView()
   : m_board(3)
+  , m_game(TicTacToe::TicTacToe(3))
 {
+  m_game.AddPlayer('X', "Player A");
+  m_game.AddPlayer('O', "Player B");
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,8 +50,11 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 void CChildView::OnLButtonDown(UINT nFlags, CPoint i_point)
 {
   CClientDC dc(this);
-    
-  m_board.UpdateBoard(&dc, i_point, 'X');
+
+  auto cell_position = m_board.UpdateBoard(&dc, i_point, 'X');
+  m_game.ContinueGame(cell_position);
+  if (m_game.HasGameEnded())
+    return;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +67,7 @@ void CChildView::OnPaint()
   // TODO: Add your message handler code here
 
   // Do not call CWnd::OnPaint() for painting messages
-  
+
   m_board.SetClientRect(client_rect);
   m_board.DrawNewBoard(&dc);
 }

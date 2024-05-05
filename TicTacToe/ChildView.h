@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameLogic.h"
 #include "UIBoard.h"
 
 class CChildView : public CWnd
@@ -17,4 +18,5 @@ protected:
 
 private:
 	UIBoard m_board;
+	TicTacToe::TicTacToe m_game;
 };

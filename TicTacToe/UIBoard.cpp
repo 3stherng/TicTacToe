@@ -59,7 +59,7 @@ void UIBoard::DrawNewBoard(CDC* pDC)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void UIBoard::UpdateBoard(CDC* pDC, const CPoint& i_point, const char& i_char)
+size_t UIBoard::UpdateBoard(CDC* pDC, const CPoint& i_point, const char& i_char)
 {
 
   CPen pen(PS_SOLID, m_border_size, RGB(0, 0, 0));
@@ -72,7 +72,7 @@ void UIBoard::UpdateBoard(CDC* pDC, const CPoint& i_point, const char& i_char)
   const auto cell_position = _GetCellPosition(i_point);
   if (cell_position < 0)
   {
-    return;
+    return 10000;
   }
   
   const auto row = cell_position / m_game_size;
@@ -88,6 +88,8 @@ void UIBoard::UpdateBoard(CDC* pDC, const CPoint& i_point, const char& i_char)
   pDC->SetBkMode(TRANSPARENT);
   pDC->DrawText(std::wstring(1, i_char).c_str(), m_game_board[cell_position], DT_SINGLELINE | DT_CENTER | DT_VCENTER);
   pDC->SelectObject(p_old_font);
+
+  return cell_position;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
