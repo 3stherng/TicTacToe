@@ -1,6 +1,3 @@
-
-// TicTacToe.h : main header file for the TicTacToe application
-//
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -9,16 +6,10 @@
 
 #include "resource.h"       // main symbols
 
-
-// CTicTacToeApp:
-// See TicTacToe.cpp for the implementation of this class
-//
-
 class CTicTacToeApp : public CWinApp
 {
 public:
 	CTicTacToeApp() noexcept;
-
 
 // Overrides
 public:

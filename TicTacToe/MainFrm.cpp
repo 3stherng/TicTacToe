@@ -1,7 +1,3 @@
-
-// MainFrm.cpp : implementation of the CMainFrame class
-//
-
 #include "pch.h"
 #include "framework.h"
 #include "TicTacToe.h"
@@ -12,14 +8,14 @@
 #define new DEBUG_NEW
 #endif
 
-// CMainFrame
-
 IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
 
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static UINT indicators[] =
 {
@@ -29,16 +25,20 @@ static UINT indicators[] =
 	ID_INDICATOR_SCRL,
 };
 
-// CMainFrame construction/destruction
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 CMainFrame::CMainFrame() noexcept
 {
 	// TODO: add member initialization code here
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 CMainFrame::~CMainFrame()
 {
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -71,9 +71,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_wndToolBar);
 
-
 	return 0;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -87,7 +88,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	return TRUE;
 }
 
-// CMainFrame diagnostics
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
@@ -101,14 +102,16 @@ void CMainFrame::Dump(CDumpContext& dc) const
 }
 #endif //_DEBUG
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CMainFrame message handlers
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
-	// forward focus to the view window
-	m_wndView.SetFocus();
+	m_wndView.SetFocus(); // forward focus to the view window
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
@@ -119,4 +122,3 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 	// otherwise, do default handling
 	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
-

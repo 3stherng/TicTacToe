@@ -1,32 +1,24 @@
-
-// TicTacToe.cpp : Defines the class behaviors for the application.
-//
-
 #include "pch.h"
-#include "framework.h"
-#include "afxwinappex.h"
 #include "afxdialogex.h"
-#include "TicTacToe.h"
+#include "afxwinappex.h"
+#include "framework.h"
 #include "MainFrm.h"
-
+#include "TicTacToe.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
-// CTicTacToeApp
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 BEGIN_MESSAGE_MAP(CTicTacToeApp, CWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &CTicTacToeApp::OnAppAbout)
 END_MESSAGE_MAP()
 
-
-// CTicTacToeApp construction
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 CTicTacToeApp::CTicTacToeApp() noexcept
 {
-
 	// TODO: replace application ID string below with unique ID string; recommended
 	// format for string is CompanyName.ProductName.SubProduct.VersionInformation
 	SetAppID(_T("TicTacToe.AppID.NoVersion"));
@@ -35,17 +27,16 @@ CTicTacToeApp::CTicTacToeApp() noexcept
 	// Place all significant initialization in InitInstance
 }
 
-// The one and only CTicTacToeApp object
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// The one and only CTicTacToeApp object
 CTicTacToeApp theApp;
 
-
-// CTicTacToeApp initialization
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 BOOL CTicTacToeApp::InitInstance()
 {
 	CWinApp::InitInstance();
-
 
 	EnableTaskbarInteraction(FALSE);
 
@@ -73,15 +64,13 @@ BOOL CTicTacToeApp::InitInstance()
 		WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, nullptr,
 		nullptr);
 
-
-
-
-
 	// The one and only window has been initialized, so show and update it
 	pFrame->ShowWindow(SW_SHOW);
 	pFrame->UpdateWindow();
 	return TRUE;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int CTicTacToeApp::ExitInstance()
 {
@@ -89,10 +78,9 @@ int CTicTacToeApp::ExitInstance()
 	return CWinApp::ExitInstance();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CTicTacToeApp message handlers
-
-
-// CAboutDlg dialog used for App About
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CAboutDlg : public CDialogEx
 {
@@ -112,19 +100,26 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
 {
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
-// App command to run the dialog
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void CTicTacToeApp::OnAppAbout()
 {
 	CAboutDlg aboutDlg;

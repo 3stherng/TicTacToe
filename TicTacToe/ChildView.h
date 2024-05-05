@@ -1,36 +1,20 @@
-
-// ChildView.h : interface of the CChildView class
-//
-
-
 #pragma once
 
-
-// CChildView window
+#include "UIBoard.h"
 
 class CChildView : public CWnd
 {
-// Construction
 public:
 	CChildView();
-
-// Attributes
-public:
-
-// Operations
-public:
-
-// Overrides
-	protected:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-
-// Implementation
-public:
 	virtual ~CChildView();
 
-	// Generated message map functions
 protected:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
-};
 
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+private:
+	UIBoard m_board;
+};
