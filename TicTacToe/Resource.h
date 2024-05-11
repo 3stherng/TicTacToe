@@ -5,6 +5,12 @@
 #define IDD_ABOUTBOX				100
 #define IDR_MAINFRAME				128
 #define IDR_TicTacToeTYPE				130
+#define ID_2_PLAYERS        131
+#define ID_3_PLAYERS        132
+#define ID_4_PLAYERS        133
+#define ID_GAME_SIZE_3      134
+#define ID_GAME_SIZE_4      135
+#define ID_GAME_SIZE_5      136
 
 // Next default values for new objects
 //

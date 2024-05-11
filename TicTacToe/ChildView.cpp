@@ -1,18 +1,17 @@
 #include "pch.h"
 #include "ChildView.h"
-#include "framework.h"
-#include "TicTacToe.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-CChildView::CChildView()
-  : m_board(3)
-  , m_game(TicTacToe::TicTacToe(3))
+CChildView::CChildView(size_t i_number_of_players, size_t i_board_size)
+  : m_player_number(i_number_of_players)
+  , m_board_size(i_board_size)
+  , m_board(UIBoard(i_board_size))
+  , m_game(TicTacToe::TicTacToe(i_board_size))
 {
-  m_game.AddPlayer('X', "Player A");
-  m_game.AddPlayer('O', "Player B");
+  m_game.AddPlayer(m_player_number);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,15 +50,15 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint i_point)
 {
   CClientDC dc(this);
 
-  auto cell_position = m_board.UpdateBoard(&dc, i_point, m_game.GetCurrentPlayerMarker());
+  auto cell_position = m_board.DrawMarkerOnBoard(&dc, i_point, m_game.GetCurrentPlayerMarker());
   m_game.ContinueGame(cell_position);
   if (m_game.HasGameEnded())
-    AnnonceGameResult();
+    _AnnounceGameResult();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void CChildView::AnnonceGameResult()
+void CChildView::_AnnounceGameResult()
 {
   CString annoucement;
   if (m_game.GetGameStatus() == TicTacToe::GameStatus::DRAW)
@@ -68,22 +67,31 @@ void CChildView::AnnonceGameResult()
   }
   else
   {
-    annoucement = (m_game.GetWinnerName() + "has WON the game!").c_str();
+    annoucement = (m_game.GetWinnerName() + " has WON the game!").c_str();
   }
   MessageBox(annoucement, _T("Game Over"), MB_ICONEXCLAMATION | MB_OK);
+  ResetGame(m_player_number, m_board_size);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void CChildView::ResetGame(const size_t& i_player_number, const size_t& i_board_size)
+{
+  m_game = TicTacToe::TicTacToe(i_board_size);
+  m_board = UIBoard(i_board_size);
+  m_game.AddPlayer(i_player_number);
+  Invalidate();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void CChildView::OnPaint()
 {
-  CPaintDC dc(this); // device context for painting
+  CPaintDC dc(this);
   CRect client_rect;
   GetClientRect(&client_rect);
-  // TODO: Add your message handler code here
-
-  // Do not call CWnd::OnPaint() for painting messages
 
   m_board.SetClientRect(client_rect);
-  m_board.DrawNewBoard(&dc);
+
+  m_board.DrawBoard(&dc);
 }

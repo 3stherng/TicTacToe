@@ -2,8 +2,6 @@
 
 #include "GameLogic.h"
 
-#include <iostream>
-
 namespace
 {
   inline bool _IsBackwardSlash(const size_t& i_pos, const size_t& i_size)
@@ -155,7 +153,7 @@ namespace TicTacToe
   // Class TicTacToe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  TicTacToe::TicTacToe(const size_t& i_size)
+  TicTacToe::TicTacToe(size_t i_size)
     : m_game_iteration(0)
     , m_curr_player_idx(0)
     , m_players({})
@@ -166,16 +164,18 @@ namespace TicTacToe
       m_board.emplace_back(i_size, ' ');
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  void TicTacToe::AddPlayer(const char& i_marker, const std::string& i_name)
+  void TicTacToe::AddPlayer(const size_t& i_number_of_player)
   {
-    m_players.push_back(std::make_shared<Player>(m_board.size(), i_marker, i_name));
+    std::vector<char> marker = { 'X', 'O', '*', '#' };
+    for (int i = 0; i < i_number_of_player; ++i)
+      m_players.push_back(std::make_shared<Player>(m_board.size(), marker[i], "Player " + std::to_string(i + 1)));
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  void TicTacToe::ContinueGame(const size_t& i_current_player_input_position) // minor comment: might be helpful to add one liner on what this function accomplishes
+  void TicTacToe::ContinueGame(const size_t& i_current_player_input_position)
   {
     ++m_game_iteration;
 
@@ -186,9 +186,9 @@ namespace TicTacToe
     _UpdateOpponentChances(i_current_player_input_position);
   }
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  bool TicTacToe::HasGameEnded() // minor comment: might be helpful to add one liner on what this function accomplishes 
+  bool TicTacToe::HasGameEnded()
   {
     const auto& curr_player = m_players[m_curr_player_idx];
 
@@ -315,16 +315,15 @@ namespace TicTacToe
         if (i_has_chance_col[col])
         {
           bool has_won = true;
-          for (auto& row : m_board) // optional: can std::all_of be used here?
-          {
-            if (row[col] != m_players[m_curr_player_idx]->GetMarker())
+
+          if (std::all_of(m_board.begin(), m_board.end(),
+            [col, curr_player_marker](std::vector<char> rows)
             {
-              has_won = false;
-              break;
-            }
-          }
-          if (has_won)
+              return rows[col] == curr_player_marker;
+            }))
+          {
             return true;
+          }
         }
     }
 

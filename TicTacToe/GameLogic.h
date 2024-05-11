@@ -1,11 +1,5 @@
 #pragma once
 
-#include <algorithm>
-#include <memory>
-#include <vector>
-#include <string>
-
-
 namespace TicTacToe
 {
   enum class GameStatus
@@ -25,9 +19,9 @@ namespace TicTacToe
     class Player;
 
   public:
-    explicit TicTacToe(const size_t& i_size);
+    explicit TicTacToe(size_t i_size);
 
-    void AddPlayer(const char& i_marker, const std::string& i_name);
+    void AddPlayer(const size_t& i_number_of_player);
     void ContinueGame(const size_t& i_current_player_input_position);
     bool HasGameEnded();
     std::string GetWinnerName();

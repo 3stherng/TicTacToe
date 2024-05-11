@@ -2,9 +2,7 @@
 
 #include "UIBoard.h"
 
-#include <string>
-
-UIBoard::UIBoard(const size_t& i_game_size)
+UIBoard::UIBoard(size_t i_game_size)
   : m_game_size(i_game_size)
   , m_client_rect(CRect(0, 0, 0, 0))
   , m_cell_size(50)
@@ -12,27 +10,33 @@ UIBoard::UIBoard(const size_t& i_game_size)
   , m_border_size(10)
   , m_game_board({})
 {
-  m_game_board.reserve(9);
+  m_colors.push(RGB(0, 0, 0));
+  m_colors.push(RGB(255, 0, 0));
+  m_colors.push(RGB(0, 255, 0));
+  m_colors.push(RGB(0, 0, 255));
+
+  for (int i = 0; i < m_game_size * m_game_size; ++i)
+    m_game_board.emplace_back(std::make_pair(CRect(0, 0, 0, 0), ' '));
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 UIBoard::~UIBoard()
 {
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void UIBoard::SetClientRect(const CRect& i_client_rect)
 {
   m_client_rect = i_client_rect;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void UIBoard::DrawNewBoard(CDC* pDC)
+void UIBoard::DrawBoard(CDC* pDC)
 {
-  CPen pen(PS_SOLID, m_border_size, RGB(0, 0, 0));
+  CPen pen(PS_SOLID, static_cast<int>(m_border_size), RGB(0, 0, 0));
   CPen* p_old_pen = pDC->SelectObject(&pen);
 
   m_cell_size = m_client_rect.Height() / m_game_size;
@@ -42,66 +46,80 @@ void UIBoard::DrawNewBoard(CDC* pDC)
   {
     for (auto j = 0; j < m_game_size; ++j)
     {
-      m_game_board.push_back(CRect(m_cell_size * i, m_cell_size * j, m_cell_size * (i + 1), m_cell_size * (j + 1)));
+      m_game_board[i * m_game_size + j].first = CRect(
+        static_cast<int>(m_cell_size * i),
+        static_cast<int>(m_cell_size * j),
+        static_cast<int>(m_cell_size * (i + 1)),
+        static_cast<int>(m_cell_size * (j + 1)));
     }
   }
 
   for (auto i = 1; i < m_game_size; ++i)
   {
-    pDC->MoveTo(m_cell_size * i, 0);
-    pDC->LineTo(m_cell_size * i, m_cell_size * m_game_size);
-    pDC->MoveTo(0, m_cell_size * i);
-    pDC->LineTo(m_cell_size * m_game_size, m_cell_size * i);
+    pDC->MoveTo(static_cast<int>(m_cell_size) * i, 0);
+    pDC->LineTo(static_cast<int>(m_cell_size * i), static_cast<int>(m_cell_size * m_game_size));
+    pDC->MoveTo(0, static_cast<int>(m_cell_size) * i);
+    pDC->LineTo(static_cast<int>(m_cell_size * m_game_size), static_cast<int>(m_cell_size * i));
+  }
+
+  for (auto i = 0; i < m_game_size * m_game_size; ++i)
+  {
+    if (m_game_board[i].second != ' ')
+    {
+      _DrawSymbol(pDC, m_game_board[i].second, i);
+    }
   }
 
   pDC->SelectObject(p_old_pen);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-size_t UIBoard::UpdateBoard(CDC* pDC, const CPoint& i_point, const char& i_char)
+size_t UIBoard::DrawMarkerOnBoard(CDC* pDC, const CPoint& i_point, const char& i_char)
 {
-
-  CPen pen(PS_SOLID, m_border_size, RGB(0, 0, 0));
-  const auto p_old_pen = pDC->SelectObject(&pen);
-
-  CFont font;
-  font.CreatePointFont(720, L"Comic Sans MS");
-  CFont* p_old_font = pDC->SelectObject(&font);
-
-  const auto cell_position = _GetCellPosition(i_point);
-  if (cell_position < 0)
+  if (!m_symbol_colors.count(i_char) && m_symbol_colors.size() < 4)
   {
-    return 10000;
+    m_symbol_colors[i_char] = m_colors.top();
+    m_colors.pop();
   }
-  
-  const auto row = cell_position / m_game_size;
-  const auto column = cell_position % m_game_size;
 
-  CRect rect(
-    row * m_cell_size + m_border_size,
-    column * m_cell_size + m_border_size,
-    row * m_cell_size + m_border_size + m_symbol_size,
-    column * m_cell_size + m_border_size + m_symbol_size);
+  auto cell = _GetCellPosition(i_point);
 
-  pDC->SetTextColor(RGB(0, 0, 255));
-  pDC->SetBkMode(TRANSPARENT);
-  pDC->DrawText(std::wstring(1, i_char).c_str(), m_game_board[cell_position], DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-  pDC->SelectObject(p_old_font);
+  if (m_game_board[cell].second == ' ')
+  {
+    _DrawSymbol(pDC, i_char, cell);
+    m_game_board[cell].second = i_char;
+  }
 
-  return cell_position;
+  return cell;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int UIBoard::_GetCellPosition(const CPoint& i_point)
+void UIBoard::_DrawSymbol(CDC* pDC, const char& i_char, const size_t& i_cell)
 {
-  for (int i = 0; i < m_game_board.size(); ++i) 
+  CFont font;
+  font.CreatePointFont(720, L"Comic Sans MS");
+  CFont* p_old_font = pDC->SelectObject(&font);
+
+  pDC->SetTextColor(m_symbol_colors[i_char]);
+
+  pDC->SetBkMode(TRANSPARENT);
+  pDC->DrawText(std::wstring(1, i_char).c_str(), m_game_board[i_cell].first,
+    DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+  pDC->SelectObject(p_old_font);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+size_t UIBoard::_GetCellPosition(const CPoint& i_point)
+{
+  for (int i = 0; i < m_game_board.size(); ++i)
   {
-    if (m_game_board[i].PtInRect(i_point))
+    if (m_game_board[i].first.PtInRect(i_point))
     {
       return i;
     }
   }
-  return -1;
+  return sizeof(size_t);
 }
